@@ -1,10 +1,3 @@
-# app.py
-
-```python
-# ============================================================
-# SR1-ZQ INSTITUTIONAL LIQUIDITY DASHBOARD
-# Streamlit App
-# ============================================================
 
 import streamlit as st
 import pandas as pd
