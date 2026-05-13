@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -6,58 +5,69 @@ import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime
 
+# ============================================================
+# PAGE CONFIG
+# ============================================================
+
 st.set_page_config(
     page_title="SR1-ZQ Institutional Dashboard",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-color: #0b0f14;
-        color: #d7dde8;
-    }
+# ============================================================
+# CUSTOM CSS
+# ============================================================
 
-    .metric-card {
-        background-color: #11161f;
-        border: 1px solid rgba(255,255,255,0.06);
-        padding: 18px;
-        border-radius: 18px;
-        box-shadow: 0px 4px 14px rgba(0,0,0,0.25);
-    }
+st.markdown("""
+<style>
 
-    .panel-card {
-        background-color: #11161f;
-        border: 1px solid rgba(255,255,255,0.06);
-        padding: 20px;
-        border-radius: 20px;
-        margin-bottom: 14px;
-    }
+.stApp {
+    background-color: #0b0f14;
+    color: #d7dde8;
+}
 
-    .big-number {
-        font-size: 34px;
-        font-weight: 700;
-    }
+.metric-card {
+    background-color: #11161f;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0px 4px 14px rgba(0,0,0,0.25);
+}
 
-    .panel-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: #7dd3fc;
-        margin-bottom: 18px;
-    }
+.panel-card {
+    background-color: #11161f;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
 
-    .small-label {
-        color: #94a3b8;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+.big-number {
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.panel-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #7dd3fc;
+    margin-bottom: 18px;
+}
+
+.small-label {
+    color: #94a3b8;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ============================================================
+# SIDEBAR
+# ============================================================
 
 st.sidebar.title("SR1-ZQ Dashboard")
 
@@ -77,29 +87,36 @@ contract_focus = st.sidebar.selectbox(
 )
 
 st.sidebar.markdown("---")
+
 show_stress = st.sidebar.checkbox("Show Crisis Metrics", True)
 show_cross = st.sidebar.checkbox("Show Cross Asset", True)
 show_positioning = st.sidebar.checkbox("Show Positioning", True)
 
+# ============================================================
+# HEADER
+# ============================================================
+
 col1, col2 = st.columns([4, 1])
 
 with col1:
-    st.markdown(
-        """
-        <div style='padding-top:10px;'>
-            <div style='font-size:34px;font-weight:700;color:#60a5fa;'>
-                SR1-ZQ Institutional Liquidity Dashboard
-            </div>
-            <div style='color:#94a3b8;font-size:14px;'>
-                Macro Liquidity • Repo Stress • Fed Path • STIR Relative Value
-            </div>
+    st.markdown("""
+    <div style='padding-top:10px;'>
+        <div style='font-size:34px;font-weight:700;color:#60a5fa;'>
+            SR1-ZQ Institutional Liquidity Dashboard
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
+
+        <div style='color:#94a3b8;font-size:14px;'>
+            Macro Liquidity • Repo Stress • Fed Path • STIR Relative Value
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col2:
     st.metric("Liquidity Regime", "71", "+4")
+
+# ============================================================
+# TOP METRICS
+# ============================================================
 
 metrics = [
     ("SOFR", "4.33%", "+0bp"),
@@ -115,21 +132,48 @@ metrics = [
 cols = st.columns(8)
 
 for col, metric in zip(cols, metrics):
+
     with col:
+
         st.markdown("<div class='metric-card'>", unsafe_allow_html=True)
-        st.markdown(f"<div class='small-label'>{metric[0]}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='big-number'>{metric[1]}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div style='color:#94a3b8;font-size:13px'>{metric[2]}</div>", unsafe_allow_html=True)
+
+        st.markdown(
+            f"<div class='small-label'>{metric[0]}</div>",
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            f"<div class='big-number'>{metric[1]}</div>",
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            f"<div style='color:#94a3b8;font-size:13px'>{metric[2]}</div>",
+            unsafe_allow_html=True,
+        )
+
         st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
+# ============================================================
+# MAIN GRID
+# ============================================================
+
 left, center, right = st.columns([1.1, 1.2, 0.9])
+
+# ============================================================
+# LEFT PANEL
+# ============================================================
 
 with left:
 
     st.markdown("<div class='panel-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='panel-title'>Fed Path Engine</div>", unsafe_allow_html=True)
+
+    st.markdown(
+        "<div class='panel-title'>Fed Path Engine</div>",
+        unsafe_allow_html=True,
+    )
 
     meetings = pd.DataFrame(
         {
@@ -158,11 +202,19 @@ with left:
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
     st.dataframe(meetings, use_container_width=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
 
+    # LIQUIDITY ENGINE
+
     st.markdown("<div class='panel-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='panel-title'>Liquidity Regime Engine</div>", unsafe_allow_html=True)
+
+    st.markdown(
+        "<div class='panel-title'>Liquidity Regime Engine</div>",
+        unsafe_allow_html=True,
+    )
 
     gauge = go.Figure(
         go.Indicator(
@@ -183,19 +235,40 @@ with left:
     )
 
     st.plotly_chart(gauge, use_container_width=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
+
+# ============================================================
+# CENTER PANEL
+# ============================================================
 
 with center:
 
     st.markdown("<div class='panel-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='panel-title'>Relative Value Engine</div>", unsafe_allow_html=True)
+
+    st.markdown(
+        "<div class='panel-title'>Relative Value Engine</div>",
+        unsafe_allow_html=True,
+    )
 
     rv_df = pd.DataFrame(
         {
-            "Metric": ["SOFR-EFFR", "FRA-OIS", "SR1-SR3", "Bill-OIS", "GC-EFFR"],
+            "Metric": [
+                "SOFR-EFFR",
+                "FRA-OIS",
+                "SR1-SR3",
+                "Bill-OIS",
+                "GC-EFFR",
+            ],
             "Value": [0.0, 31, -1.5, 7, 3],
             "Percentile": [48, 82, 63, 71, 66],
-            "Signal": ["Neutral", "Stress", "Watch", "Tight", "Pressure"],
+            "Signal": [
+                "Neutral",
+                "Stress",
+                "Watch",
+                "Tight",
+                "Pressure",
+            ],
         }
     )
 
@@ -217,10 +290,17 @@ with center:
     )
 
     st.plotly_chart(fig2, use_container_width=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
 
+    # SEASONALITY
+
     st.markdown("<div class='panel-card'>", unsafe_allow_html=True)
-    st.markdown("<div class='panel-title'>Seasonality Engine</div>", unsafe_allow_html=True)
+
+    st.markdown(
+        "<div class='panel-title'>Seasonality Engine</div>",
+        unsafe_allow_html=True,
+    )
 
     seasonality_df = pd.DataFrame(
         {
@@ -229,7 +309,12 @@ with center:
         }
     )
 
-    fig3 = px.bar(seasonality_df, x="Month", y="Stress", color="Stress")
+    fig3 = px.bar(
+        seasonality_df,
+        x="Month",
+        y="Stress",
+        color="Stress",
+    )
 
     fig3.update_layout(
         template="plotly_dark",
@@ -239,32 +324,66 @@ with center:
     )
 
     st.plotly_chart(fig3, use_container_width=True)
+
     st.markdown("</div>", unsafe_allow_html=True)
+
+# ============================================================
+# RIGHT PANEL
+# ============================================================
 
 with right:
 
     if show_stress:
+
         st.markdown("<div class='panel-card'>", unsafe_allow_html=True)
-        st.markdown("<div class='panel-title'>Stress & Crisis Monitor</div>", unsafe_allow_html=True)
+
+        st.markdown(
+            "<div class='panel-title'>Stress & Crisis Monitor</div>",
+            unsafe_allow_html=True,
+        )
 
         stress_df = pd.DataFrame(
             {
-                "Metric": ["Repo Fails", "Cross Currency Basis", "SRF Usage", "CDX Financials", "MOVE"],
+                "Metric": [
+                    "Repo Fails",
+                    "Cross Currency Basis",
+                    "SRF Usage",
+                    "CDX Financials",
+                    "MOVE",
+                ],
                 "Value": [412, -41, 4, 121, 112],
             }
         )
 
         st.dataframe(stress_df, use_container_width=True)
-        st.warning("Current regime resembles Sep 2019 Repo Stress")
+
+        st.warning(
+            "Current liquidity regime resembles Sep 2019 Repo Stress"
+        )
+
         st.markdown("</div>", unsafe_allow_html=True)
 
+    # CROSS ASSET
+
     if show_cross:
+
         st.markdown("<div class='panel-card'>", unsafe_allow_html=True)
-        st.markdown("<div class='panel-title'>Cross Asset Confirmation</div>", unsafe_allow_html=True)
+
+        st.markdown(
+            "<div class='panel-title'>Cross Asset Confirmation</div>",
+            unsafe_allow_html=True,
+        )
 
         cross_df = pd.DataFrame(
             {
-                "Asset": ["2Y Yield", "DXY", "USDJPY", "HY Spreads", "Regional Banks", "Oil"],
+                "Asset": [
+                    "2Y Yield",
+                    "DXY",
+                    "USDJPY",
+                    "HY Spreads",
+                    "Regional Banks",
+                    "Oil",
+                ],
                 "Signal": [
                     "Cuts Confirmed",
                     "USD Softening",
@@ -277,21 +396,41 @@ with right:
         )
 
         st.dataframe(cross_df, use_container_width=True)
-        st.success("Cross asset confirms liquidity-driven bull steepening")
+
+        st.success(
+            "Cross asset confirms liquidity-driven bull steepening"
+        )
+
         st.markdown("</div>", unsafe_allow_html=True)
 
+    # POSITIONING
+
     if show_positioning:
+
         st.markdown("<div class='panel-card'>", unsafe_allow_html=True)
-        st.markdown("<div class='panel-title'>Positioning Engine</div>", unsafe_allow_html=True)
+
+        st.markdown(
+            "<div class='panel-title'>Positioning Engine</div>",
+            unsafe_allow_html=True,
+        )
 
         positioning = pd.DataFrame(
             {
-                "Category": ["Leveraged Funds", "Dealer Gamma", "Roll Pressure"],
+                "Category": [
+                    "Leveraged Funds",
+                    "Dealer Gamma",
+                    "Roll Pressure",
+                ],
                 "Score": [88, 62, 71],
             }
         )
 
-        fig4 = px.bar(positioning, x="Category", y="Score", color="Score")
+        fig4 = px.bar(
+            positioning,
+            x="Category",
+            y="Score",
+            color="Score",
+        )
 
         fig4.update_layout(
             template="plotly_dark",
@@ -301,71 +440,19 @@ with right:
         )
 
         st.plotly_chart(fig4, use_container_width=True)
-        st.info("Leveraged funds heavily long deferred cuts")
+
+        st.info(
+            "Leveraged funds heavily long deferred cuts"
+        )
+
         st.markdown("</div>", unsafe_allow_html=True)
 
+# ============================================================
+# FOOTER
+# ============================================================
+
 st.markdown("---")
-st.caption(f"Institutional SR1-ZQ Dashboard • {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-```
 
----
-
-# requirements.txt
-
-```txt
-streamlit
-pandas
-numpy
-plotly
-```
-
----
-
-# GITHUB + STREAMLIT DEPLOYMENT
-
-## 1. Create GitHub Repository
-Repository name example:
-
-```txt
-sr1-zq-dashboard
-```
-
----
-
-## 2. Upload Files
-Upload:
-
-- app.py
-- requirements.txt
-
----
-
-## 3. Deploy On Streamlit
-Go to:
-
-```txt
-https://streamlit.io/cloud
-```
-
-Then:
-
-- Sign in with GitHub
-- New App
-- Select repository
-- Main file path:
-
-```txt
-app.py
-```
-
-- Click Deploy
-
----
-
-# LOCAL RUN
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
+st.caption(
+    f"Institutional SR1-ZQ Dashboard • {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+)
